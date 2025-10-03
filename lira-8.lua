@@ -8,30 +8,38 @@
 --       8 8 8 8 8 8 8 8
 --
 
--- First, a bash script starts a headless Pd with the Lira-8 Pd patch.
--- Second, the patch listens to UDP OSC messages in port 10121.
---
--- The following addresses are recognized:
---
---     /hold-1234 f   Hold 1, 2, 3 and 4
---     /pitch-1234 f  Hold 1, 2, 3 and 4
---     /hold-5678 f   Hold 5, 6, 7 and 8
---     /hold-5678 f   Hold 5, 6, 7 and 8
---
+-- First a bash script starts a headless Pd with the Lira-8 Pd patch.
+-- Second the patch listens to UDP OSC messages in port 10121.
 -- Finally when the norns script exits, all running Pd processes are killed (crude!)
 
 DEBUG = false
 
 UI = require('ui')
+MU = require('musicutil')
 
 pd_osc      = {"localhost", 10121}
 engine_boot = _path.this.lib.."lira-8.sh"
+midi_dev    = nil
 
 local WIDTH   = 128
 local HEIGHT  = 64
 local shifted = false
 
 tune_uis = {}
+notesensors = {
+   [60] = 'sensor-1',
+   [61] = 'source-12',
+   [62] = 'sensor-2',
+   [63] = 'source-34',
+   [64] = 'sensor-3',
+   [65] = 'sensor-4',
+   [66] = 'source-56',
+   [67] = 'sensor-5',
+   [68] = 'source-78',
+   [69] = 'sensor-6',
+   [71] = 'sensor-7',
+   [72] = 'sensor-8'
+}
 
 -- # Lifecycle.
 
@@ -77,6 +85,13 @@ end
 -- # Parameter setup.
 
 function init_params()
+   params:add_option('midi-dev', "midi dev", get_midi_device_names())
+   params:set_action('midi-dev', function(val)
+			midi_dev = midi.connect(val)
+			midi_dev.event = midi_handler
+   end)
+   params:add_number('midi-ch', "midi channel", 1,  16, 1)
+
    -- 1234
    params:add_group('1234', "1234", 8)
    params:add_number('hold-1234', 'hold 1234', 0, 127, 60)
@@ -203,7 +218,7 @@ function init_params()
       params:add_number('tune-'..i, 'tune '..i, 0, 127, math.random(127))
       params:set_action('tune-'..i, function(tune)
 			   osc.send(pd_osc, "/tune-"..i, {tune})
-			   tune_uis[1]:set_value(tune)
+			   tune_uis[i]:set_value(tune)
       end)
       params:set('tune-'..i, params:get('tune-'..i))
 
@@ -386,6 +401,37 @@ function redraw()
    screen.stroke()
 
    screen.update()
+end
+
+function midi_handler(data)
+   local msg = midi.to_msg(data)
+   if msg.ch == params:get('midi-ch') then
+      if msg.type == "note_on" or msg.type == "note_off" then
+	 -- tab.print(msg)
+	 local par = notesensors[msg.note]
+	 if par:find("^sensor") then
+	    if msg.type == "note_on" then
+	       params:set(par, 1)
+	    elseif msg.type == "note_off" then
+	       params:set(par, 0)
+	    end
+	 elseif par:find("^source") then
+	    if msg.type == "note_on" then
+	       params:set(par, ((params:get(par) + 1) % 3) + 1)
+	    end
+	 end
+      end
+   end
+end
+
+function get_midi_device_names()
+    local names = {}
+    for _, v in pairs(midi.vports) do
+        if v.connected then
+            table.insert(names, v.name)
+        end
+    end
+    return names
 end
 
 -- Local Variables:
