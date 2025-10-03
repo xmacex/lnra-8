@@ -40,6 +40,7 @@ midi_ui = {
    [71] = 'sensor-7',
    [72] = 'sensor-8'
 }
+lyra_variations = {"y", "i", "n"}
 
 -- # Lifecycle.
 
@@ -484,11 +485,11 @@ function redraw()
    sharp_78_ui:redraw()
 
    -- a bit of logo
-   screen.font_face(10)
-   screen.font_size(15)
    screen.level(5)
    screen.move(WIDTH/2, HEIGHT/2-4)
-   screen.text_center("lnra-8")
+   screen.font_face( 8+math.random(4))
+   screen.font_size(12+math.random(4))
+   screen.text_center("l"..lyra_variations[math.random(#lyra_variations)].."ra-8")
    screen.stroke()
 
    screen.update()
