@@ -1,4 +1,4 @@
---           LIRA-8
+--           LNRA-8
 --       ^ ^  o o ^ ^ o o
 --       o o o o o o o
 --          o  ^ ^  o
@@ -8,7 +8,7 @@
 --       8 8 8 8 8 8 8 8
 --
 
--- First a bash script starts a headless Pd with the Lira-8 Pd patch.
+-- First a bash script starts a headless Pd with the LIRA-8 Pd patch.
 -- Second the patch listens to UDP OSC messages in port 10121.
 -- Finally when the norns script exits, all running Pd processes are killed (crude!)
 
@@ -18,7 +18,7 @@ UI = require('ui')
 MU = require('musicutil')
 
 pd_osc      = {"localhost", 10121}
-engine_boot = _path.this.lib.."lira-8.sh"
+engine_boot = _path.this.lib.."lnra-8.sh"
 midi_dev    = nil
 
 local WIDTH   = 128
@@ -488,7 +488,7 @@ function redraw()
    screen.font_size(15)
    screen.level(5)
    screen.move(WIDTH/2, HEIGHT/2-4)
-   screen.text_center("lira-8")
+   screen.text_center("lnra-8")
    screen.stroke()
 
    screen.update()
