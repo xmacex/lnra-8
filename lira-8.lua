@@ -26,7 +26,7 @@ local HEIGHT  = 64
 local shifted = false
 
 tune_uis = {}
-notesensors = {
+midi_ui = {
    [60] = 'sensor-1',
    [61] = 'source-12',
    [62] = 'sensor-2',
@@ -94,14 +94,15 @@ function init_params()
 
    -- 1234
    params:add_group('1234', "1234", 8)
-   params:add_number('hold-1234', 'hold 1234', 0, 127, 60)
+
+   params:add_taper('hold-1234', 'hold 1234', 0, 127, 60)
    params:set_action('hold-1234', function(freq)
 			osc.send(pd_osc, "/hold-1234", {freq})
 			hold_1234_ui:set_value(freq)
    end)
    params:set('hold-1234', params:get('hold-1234'))
 
-   params:add_number('pitch-1234', 'pitch 1234', 0, 127, 30)
+   params:add_taper('pitch-1234', 'pitch 1234', 0, 127, 30)
    params:set_action('pitch-1234', function(freq)
 			osc.send(pd_osc, "/pitch-1234", {freq})
 			pitch_1234_ui:set_value(freq)
@@ -116,14 +117,14 @@ function init_params()
    end)
    params:set('source-12', params:get('source-12'))
 
-   params:add_number('mod-12', 'mod 12', 0, 127, 60)
+   params:add_taper('mod-12', 'mod 12', 0, 127, 60)
    params:set_action('mod-12', function(modulation)
 			osc.send(pd_osc, "/mod-12", {modulation})
 			mod_12_ui:set_value(modulation)
    end)
    params:set('mod-12', params:get('mod-12'))
 
-   params:add_number('sharp-12', 'sharp 12', 0, 127, 60)
+   params:add_taper('sharp-12', 'sharp 12', 0, 127, 60)
    params:set_action('sharp-12', function(sharp)
 			osc.send(pd_osc, "/sharp-12", {sharp})
 			sharp_12_ui:set_value(sharp)
@@ -138,14 +139,14 @@ function init_params()
    end)
    params:set('source-34', params:get('source-34'))
 
-   params:add_number('mod-34', 'mod 34', 0, 127, 60)
+   params:add_taper('mod-34', 'mod 34', 0, 127, 60)
    params:set_action('mod-34', function(modulation)
 			osc.send(pd_osc, "/mod-34", {modulation})
 			mod_34_ui:set_value(modulation)
    end)
    params:set('mod-34', params:get('mod-34'))
 
-   params:add_number('sharp-34', 'sharp 34', 0, 127, 60)
+   params:add_taper('sharp-34', 'sharp 34', 0, 127, 60)
    params:set_action('sharp-34', function(sharp)
 			osc.send(pd_osc, "/sharp-34", {sharp})
 			sharp_34_ui:set_value(sharp)
@@ -154,14 +155,15 @@ function init_params()
 
    -- 5678
    params:add_group('5678', "5678", 8)
-   params:add_number('hold-5678', 'hold 5678', 0, 127, 10)
+
+   params:add_taper('hold-5678', 'hold 5678', 0, 127, 10)
    params:set_action('hold-5678', function(freq)
 			osc.send(pd_osc, "/hold-5678", {freq})
 			hold_5678_ui:set_value(freq)
    end)
    params:set('hold-5678', params:get('hold-5678'))
 
-   params:add_number('pitch-5678', 'pitch 5678', 0, 127, 80)
+   params:add_taper('pitch-5678', 'pitch 5678', 0, 127, 80)
    params:set_action('pitch-5678', function(freq)
 			osc.send(pd_osc, "/pitch-5678", {freq})
 			pitch_5678_ui:set_value(freq)
@@ -176,14 +178,14 @@ function init_params()
    end)
    params:set('source-56', params:get('source-56'))
 
-   params:add_number('mod-56', 'mod 56', 0, 127, 60)
+   params:add_taper('mod-56', 'mod 56', 0, 127, 60)
    params:set_action('mod-56', function(modulation)
 			osc.send(pd_osc, "/mod-56", {modulation})
 			mod_56_ui:set_value(modulation)
    end)
    params:set('mod-56', params:get('mod-56'))
 
-   params:add_number('sharp-56', 'sharp 56', 0, 127, 60)
+   params:add_taper('sharp-56', 'sharp 56', 0, 127, 60)
    params:set_action('sharp-56', function(sharp)
 			osc.send(pd_osc, "/sharp-56", {sharp})
 			sharp_56_ui:set_value(sharp)
@@ -198,14 +200,14 @@ function init_params()
    end)
    params:set('source-78', params:get('source-34'))
 
-   params:add_number('mod-78', 'mod 78', 0, 127, 60)
+   params:add_taper('mod-78', 'mod 78', 0, 127, 60)
    params:set_action('mod-78', function(modulation)
 			osc.send(pd_osc, "/mod-78", {modulation})
 			mod_78_ui:set_value(modulation)
    end)
    params:set('mod-78', params:get('mod-78'))
 
-   params:add_number('sharp-78', 'sharp 78', 0, 127, 60)
+   params:add_taper('sharp-78', 'sharp 78', 0, 127, 60)
    params:set_action('sharp-78', function(sharp)
 			osc.send(pd_osc, "/sharp-78", {sharp})
 			sharp_78_ui:set_value(sharp)
@@ -215,7 +217,7 @@ function init_params()
    -- Oscillators
    for i = 1,8 do
       -- Tune
-      params:add_number('tune-'..i, 'tune '..i, 0, 127, math.random(127))
+      params:add_taper('tune-'..i, 'tune '..i, 0, 127, math.random(127))
       params:set_action('tune-'..i, function(tune)
 			   osc.send(pd_osc, "/tune-"..i, {tune})
 			   tune_uis[i]:set_value(tune)
@@ -247,7 +249,7 @@ function init_params()
 
    -- Hyper LFO
    params:add_group('hyperlfo', "hyper lfo", 4)
-   params:add_number('f-a', 'f-a', 0, 127, math.random(127))
+   params:add_taper('f-a', 'f-a', 0, 127, math.random(127))
    params:set_action('f-a', function(val)
 			if DEBUG then print("f-a: "..val) end
 			osc.send(pd_osc, "/f-a", {val})
@@ -255,7 +257,7 @@ function init_params()
    end)
    params:set('f-a', params:get('f-a'))
 
-   params:add_number('f-b', 'f-b', 0, 127, math.random(127))
+   params:add_taper('f-b', 'f-b', 0, 127, math.random(127))
    params:set_action('f-b', function(val)
 			if DEBUG then print("f-b: "..val) end
 			osc.send(pd_osc, "/f-b", {val})
@@ -266,13 +268,92 @@ function init_params()
    params:add_option('andor', 'and/or', {'and', 'or'}, 1)
    params:set_action('andor', function(val)
 			if DEBUG then print("andor: "..val-1) end
-			osc.send(pd_osc, "/switch", {val-1})
+			osc.send(pd_osc, "/andor", {val-1})
    end)
 
    params:add_binary('link', 'link', "toggle", math.random(2)-1)
    params:set_action('link', function(on)
 			if DEBUG then print("link: "..on-1) end
 			osc.send(pd_osc, "/link", {on-1})
+   end)
+
+   -- Mod-delay
+   params:add_group('mod-delay', "mod delay", 8)
+
+   params:add_taper('mod-1', "mod 1", 0, 127)
+   params:set_action('mod-1', function(val)
+			if DEBUG then print("mod-1: "..val) end
+			osc.send(pd_osc, "/mod-1", {val})
+			-- mod_1_ui:set_value(val)
+   end)
+
+   params:add_taper('time-1', "time 1", 0, 127)
+   params:set_action('time-1', function(val)
+			if DEBUG then print("time-1: "..val) end
+			osc.send(pd_osc, "/time-1", {val})
+			-- time_1_ui:set_value(val)
+   end)
+
+   params:add_taper('mod-2', "mod 2", 0, 127)
+   params:set_action('mod-2', function(val)
+			if DEBUG then print("mod-2: "..val) end
+			osc.send(pd_osc, "/mod-2", {val})
+			-- mod_2_ui:set_value(val)
+   end)
+
+   params:add_taper('time-2', "time 2", 0, 127)
+   params:set_action('time-2', function(val)
+			if DEBUG then print("time-2: "..val) end
+			osc.send(pd_osc, "/time-2", {val})
+			-- time_2_ui:set_value(val)
+   end)
+
+   params:add_option('lfo-wav', "lfo wav", {"tri", "sqr"})
+   params:set_action('lfo-wav', function(val)
+			if DEBUG then print("lfo-wav: "..val-1) end
+			osc.send(pd_osc, "/lfo-wav", {val-1})
+   end) -- TODO
+
+   params:add_taper('feedback', "feedback", 0, 127)
+   params:set_action('feedback', function(val)
+			if DEBUG then print("feedback: "..val) end
+			osc.send(pd_osc, "/feedback", {val})
+			-- feedback_ui:set_value(val)
+   end)
+
+   params:add_option('del-mod', "del mod", {"self", "off", "lfo"})
+   params:set_action('del-mod', function(val) end) -- TODO∑
+
+   params:add_taper('del-mix', "mix", 0, 127)
+   params:set_action('del-mix', function(val)
+			if DEBUG then print("del-mix: "..val) end
+			osc.send(pd_osc, "/del-mix", {val})
+			-- del_mix_ui:set_value(val)
+   end)
+
+   -- Distortion
+   params:add_group('distortion', "distortion", 3)
+
+   params:add_taper('dst-drv', "drv", 0, 127)
+   params:set_action('dst-drv', function(val)
+			if DEBUG then print("dst-drv: "..val) end
+			osc.send(pd_osc, "/dst-drv", {val})
+			-- dst_drv_ui:set_value(val)
+   end)
+
+   params:add_taper('dst-mix', "mix", 0, 127)
+   params:set_action('dst-mix', function(val)
+			if DEBUG then print("dst-mix: "..val) end
+			osc.send(pd_osc, "/dst-mix", {val})
+			-- dst_mix_ui:set_value(val)
+   end)
+
+   params:add_taper('dst-vol', "vol (disabled, use norns vol)", 0, 127)
+   params:set_action('dst-vol', function(val)
+			if DEBUG then print("dst-vol: "..val) end
+			print("use norns volume instead")
+			-- osc.send(pd_osc, "/dst-vol", {val})
+			-- dst_vol_ui:set_value(val)
    end)
 end
 
@@ -355,14 +436,19 @@ end
 -- Redraw the screen.
 function redraw()
    screen.clear()
-   screen.level(math.random(10))
+
+   -- the two sides
    hold_1234_ui:redraw()
    pitch_1234_ui:redraw()
    hold_5678_ui:redraw()
    pitch_5678_ui:redraw()
+
+   -- the individual oscillators / tune
    for _,tune_ui in pairs(tune_uis) do
       tune_ui:redraw()
    end
+
+   -- the individual oscillators / sensors
    for i=1,8 do
       screen.circle(WIDTH/8*i-8, HEIGHT-3, 3)
       if params:get('sensor-'..i) == 1 then
@@ -372,6 +458,7 @@ function redraw()
       end
    end
 
+   -- the mods for each pair / source
    for i,oscs in pairs{'12', '34', '56', '78'} do
       for s=1,3 do
 	 screen.pixel(WIDTH/8*i*2-WIDTH/8 -6 + s*3, HEIGHT/2+5)
@@ -384,15 +471,19 @@ function redraw()
       end
    end
 
+   -- the mods for each pair / mod depth
    mod_12_ui:redraw()
-   sharp_12_ui:redraw()
    mod_34_ui:redraw()
-   sharp_34_ui:redraw()
    mod_56_ui:redraw()
-   sharp_56_ui:redraw()
    mod_78_ui:redraw()
+
+   -- the sharpness for each pair
+   sharp_12_ui:redraw()
+   sharp_34_ui:redraw()
+   sharp_56_ui:redraw()
    sharp_78_ui:redraw()
 
+   -- a bit of logo
    screen.font_face(10)
    screen.font_size(15)
    screen.level(5)
@@ -408,7 +499,7 @@ function midi_handler(data)
    if msg.ch == params:get('midi-ch') then
       if msg.type == "note_on" or msg.type == "note_off" then
 	 -- tab.print(msg)
-	 local par = notesensors[msg.note]
+	 local par = midi_ui[msg.note]
 	 if par:find("^sensor") then
 	    if msg.type == "note_on" then
 	       params:set(par, 1)

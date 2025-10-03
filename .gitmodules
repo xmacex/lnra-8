@@ -1,0 +1,3 @@
+[submodule "lib/LIRA-8"]
+	path = lib/LIRA-8
+	url = https://github.com/MikeMorenoDSP/LIRA-8
