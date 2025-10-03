@@ -1,4 +1,4 @@
-# LNRA. LIRA-8 for norns
+# LNRA-8. LIRA-8/LYRA-8 for norns
 
 LNRA-8 is a little norns interface to Mike Moreno's [LIRA-8](https://github.com/MikeMorenoDSP/LIRA-8), which itself is a Pd emulation of SOMA Lab's famous organismic synthesizer [LYRA-8](https://somasynths.com/lyra-organismic-synthesizer/).
 
@@ -8,7 +8,7 @@ This runs Mike Moreno's Pd patch as the sound engine, so Pd needs to be installe
 
 ## Usage
 
-Encoders <kbd>e2</kbd> and <kbd>e3</kbd> control the hold volume of the two sides (1-4 and 5-8), and with <kbd>E1</kbd> their pitch
+Encoders <kbd>E2</kbd> and <kbd>E3</kbd> control the hold volume of the two sides (1-4 and 5-8), and with <kbd>K1</kbd> their pitch
 
 The first eight keys from middle-C upward are mapped to the eight sensor plates on a MIDI keyboard and channel selected in the params.
 
@@ -20,4 +20,5 @@ Sounds are randomized at startup, and effects turned down. There will be crunchy
 
 1. Install with `;install https://github.com/xmacex/lnra-8` in maiden
 2. Install pure data with `apt install puredata`
-3. Then install Mike Moreno's LIRA-8 TODO howwwww did I change it somehow?
+
+That should be it. Later I hope to use Mike Moreno's LIRA-8 as a git submodule rather than including it directly.
