@@ -12,7 +12,7 @@ Encoders <kbd>E2</kbd> and <kbd>E3</kbd> control the hold volume of the two side
 
 The first eight keys from middle-C upward are mapped to the eight sensor plates on a MIDI keyboard and channel selected in the params.
 
-Beyond that, use MIDI mapping to use your MIDI controllers. The LYRA-8 is a complex organism and interfacing with it on the small norns is hard. All the things in the LIRA-8 emulator are set up as norns parameters. The norns on-screen UI shows the oscillator, but not all modulation options, the hyperlfo or the mixer block.
+Beyond that, use MIDI mapping to use your MIDI controllers. The LYRA-8 is a complex organism and interfacing with it on the small norns is hard. All the things in the LIRA-8 emulator are set up as norns parameters. The norns on-screen UI shows the oscillator, except not all of the modulation options, nor the hyperlfo or distortion sections.
 
 Sounds are randomized at startup, and effects turned down. There will be crunchy audio when timing fails.
 
