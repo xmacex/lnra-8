@@ -2,7 +2,7 @@
 
 A norns interface to Mike Moreno's [LIRA-8](https://github.com/MikeMorenoDSP/LIRA-8), A Pd emulation of SOMA's [LYRA-8](https://somasynths.com/lyra-organismic-synthesizer/).
 
-![lnra-8-kat](lnra-8-ab.gif)
+![lnra-8-ab|720x406](lnra-8-ab.gif)
 
 What is an "organismic synthesizer"? SOMA says of their LYRA-8
 
@@ -31,7 +31,7 @@ LNRA-8 interface mimics those of LIRA-8 and LYRA-8. Those are both good to keep 
 
 | LIRA-8 | LYRA-8 |
 |--- | ---|
-| ![](https://raw.githubusercontent.com/MikeMorenoAudio/LIRA-8/master/GUI.png) | ![](upload://r0s6mum9epJdeX0m5yUQ1u6ig70.jpeg) |
+| ![](https://raw.githubusercontent.com/MikeMorenoAudio/LIRA-8/master/GUI.png) | ![](https://somasynths.com/wp-content/uploads/2021/05/img_2D_0014.png) |
 
 Oscillator tuning are randomized on startup, and effects turned down. Adjust modulation amount and paths, brighness and other stuff in the parameters, or better yet map them to MIDI or OSC controllers.
 
