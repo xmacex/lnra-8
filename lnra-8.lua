@@ -16,16 +16,17 @@ DEBUG = false
 UI = require('ui')
 MU = require('musicutil')
 
+local engine_boot = _path.this.lib.."lnra-8.sh"
 pd_osc      = {"localhost", 10121}
-engine_boot = _path.this.lib.."lnra-8.sh"
 midi_dev    = nil
 
-local WIDTH   = 128
-local HEIGHT  = 64
-local shifted = false
+local WIDTH    = 128
+local HEIGHT   = 64
+local shifted  = false
 
-tune_uis = {}
-midi_ui = {
+local startrnd = 32
+local tune_uis = {}
+local midi_ui = {
    [60] = 'sensor-1',
    [61] = 'source-12',
    [62] = 'sensor-2',
@@ -39,7 +40,7 @@ midi_ui = {
    [71] = 'sensor-7',
    [72] = 'sensor-8'
 }
-lyra_variations = {"y", "i", "n"}
+local lyra_variations = {"y", "i", "n"}
 
 -- # Lifecycle.
 
@@ -95,14 +96,14 @@ function init_params()
    -- 1234
    params:add_group('1234', "1 2 3 4", 10)
 
-   params:add_taper('hold-1234', 'hold', 0, 127, 60)
+   params:add_taper('hold-1234', 'hold', 0, 127, 63)
    params:set_action('hold-1234', function(freq)
 			osc.send(pd_osc, "/hold-1234", {freq})
 			hold_1234_ui:set_value(freq)
    end)
    params:set('hold-1234', params:get('hold-1234'))
 
-   params:add_taper('pitch-1234', 'pitch', 0, 127, 30)
+   params:add_taper('pitch-1234', 'pitch', 0, 127, 63+math.random(-startrnd/2, startrnd/2))
    params:set_action('pitch-1234', function(freq)
 			osc.send(pd_osc, "/pitch-1234", {freq})
 			pitch_1234_ui:set_value(freq)
@@ -118,14 +119,14 @@ function init_params()
    end)
    params:set('source-12', params:get('source-12'))
 
-   params:add_taper('mod-12', ' ↳mod', 0, 127, 60)
+   params:add_taper('mod-12', ' ↳mod', 0, 127, 63+math.random(-startrnd/2, startrnd/2))
    params:set_action('mod-12', function(modulation)
 			osc.send(pd_osc, "/mod-12", {modulation})
 			mod_12_ui:set_value(modulation)
    end)
    params:set('mod-12', params:get('mod-12'))
 
-   params:add_taper('sharp-12', 'sharp', 0, 127, 60)
+   params:add_taper('sharp-12', 'sharp', 0, 127, 63+math.random(-startrnd/2, startrnd/2))
    params:set_action('sharp-12', function(sharp)
 			osc.send(pd_osc, "/sharp-12", {sharp})
 			sharp_12_ui:set_value(sharp)
@@ -141,14 +142,14 @@ function init_params()
    end)
    params:set('source-34', params:get('source-34'))
 
-   params:add_taper('mod-34', ' ↳mod', 0, 127, 60)
+   params:add_taper('mod-34', ' ↳mod', 0, 127, 63+math.random(-startrnd/2, startrnd/2))
    params:set_action('mod-34', function(modulation)
 			osc.send(pd_osc, "/mod-34", {modulation})
 			mod_34_ui:set_value(modulation)
    end)
    params:set('mod-34', params:get('mod-34'))
 
-   params:add_taper('sharp-34', 'sharp', 0, 127, 60)
+   params:add_taper('sharp-34', 'sharp', 0, 127, 63+math.random(-startrnd/2, startrnd/2))
    params:set_action('sharp-34', function(sharp)
 			osc.send(pd_osc, "/sharp-34", {sharp})
 			sharp_34_ui:set_value(sharp)
@@ -158,14 +159,14 @@ function init_params()
    -- 5678
    params:add_group('5678', "5 6 7 8", 10)
 
-   params:add_taper('hold-5678', 'hold', 0, 127, 10)
+   params:add_taper('hold-5678', 'hold', 0, 127, 10+math.random(startrnd))
    params:set_action('hold-5678', function(freq)
 			osc.send(pd_osc, "/hold-5678", {freq})
 			hold_5678_ui:set_value(freq)
    end)
    params:set('hold-5678', params:get('hold-5678'))
 
-   params:add_taper('pitch-5678', 'pitch', 0, 127, 80)
+   params:add_taper('pitch-5678', 'pitch', 0, 127, 63+math.random(-startrnd/2, startrnd/2))
    params:set_action('pitch-5678', function(freq)
 			osc.send(pd_osc, "/pitch-5678", {freq})
 			pitch_5678_ui:set_value(freq)
@@ -181,14 +182,14 @@ function init_params()
    end)
    params:set('source-56', params:get('source-56'))
 
-   params:add_taper('mod-56', ' ↳mod', 0, 127, 60)
+   params:add_taper('mod-56', ' ↳mod', 0, 127, 63+math.random(-startrnd/2, startrnd/2))
    params:set_action('mod-56', function(modulation)
 			osc.send(pd_osc, "/mod-56", {modulation})
 			mod_56_ui:set_value(modulation)
    end)
    params:set('mod-56', params:get('mod-56'))
 
-   params:add_taper('sharp-56', 'sharp', 0, 127, 60)
+   params:add_taper('sharp-56', 'sharp', 0, 127, 63+math.random(-startrnd/2, startrnd/2))
    params:set_action('sharp-56', function(sharp)
 			osc.send(pd_osc, "/sharp-56", {sharp})
 			sharp_56_ui:set_value(sharp)
@@ -205,14 +206,14 @@ function init_params()
    end)
    params:set('source-78', params:get('source-34'))
 
-   params:add_taper('mod-78', ' ↳mod', 0, 127, 60)
+   params:add_taper('mod-78', ' ↳mod', 0, 127, 63+math.random(-startrnd/2, startrnd/2))
    params:set_action('mod-78', function(modulation)
 			osc.send(pd_osc, "/mod-78", {modulation})
 			mod_78_ui:set_value(modulation)
    end)
    params:set('mod-78', params:get('mod-78'))
 
-   params:add_taper('sharp-78', 'sharp', 0, 127, 60)
+   params:add_taper('sharp-78', 'sharp', 0, 127, 63+math.random(-startrnd/2, startrnd/2))
    params:set_action('sharp-78', function(sharp)
 			osc.send(pd_osc, "/sharp-78", {sharp})
 			sharp_78_ui:set_value(sharp)
@@ -359,7 +360,7 @@ function init_params()
    -- 			print("use norns volume instead")
    -- 			-- osc.send(pd_osc, "/dst-vol", {val})
    -- 			-- dst_vol_ui:set_value(val)
-   end)
+   -- end)
 end
 
 -- # Build UI
