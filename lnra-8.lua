@@ -86,15 +86,9 @@ end
 -- # Parameter setup.
 
 function init_params()
-   params:add_option('midi-dev', "midi dev", get_midi_device_names())
-   params:set_action('midi-dev', function(val)
-			midi_dev = midi.connect(val)
-			midi_dev.event = midi_handler
-   end)
-   params:add_number('midi-ch', "midi channel", 1,  16, 1)
-
    -- 1234
-   params:add_group('1234', "1 2 3 4", 10)
+   params:add_separator("group 1234")
+   params:add_group('1234', "1234", 10)
 
    params:add_taper('hold-1234', 'hold', 0, 127, 63)
    params:set_action('hold-1234', function(freq)
@@ -111,8 +105,8 @@ function init_params()
    params:set('pitch-1234', params:get('pitch-1234'))
 
    -- 12
-   params:add_separator("1 2")
-   params:add_option('source-12', 'source', {'3 4', 'off', 'lfo'}, 1)
+   params:add_separator("12")
+   params:add_option('source-12', 'source', {'34', 'off', 'lfo'}, 1)
    params:set_action('source-12', function(src)
 			osc.send(pd_osc, "/source-12", {src-1})
 			-- source_12_ui:set_value(src-1)
@@ -134,8 +128,8 @@ function init_params()
    params:set('sharp-12', params:get('sharp-12'))
 
    -- 34
-   params:add_separator("3 4")
-   params:add_option('source-34', 'source', {'1 2', 'off', 'lfo'}, 1)
+   params:add_separator("34")
+   params:add_option('source-34', 'source', {'12', 'off', 'lfo'}, 1)
    params:set_action('source-34', function(src)
 			osc.send(pd_osc, "/source-34", {src-1})
 			-- source_34_ui:set_value(src-1)
@@ -156,8 +150,26 @@ function init_params()
    end)
    params:set('sharp-34', params:get('sharp-34'))
 
+   -- Oscillators 1 to 4
+   for i = 1,4 do
+      -- Sensor
+      params:add_binary('sensor-'..i, 'sensor '..i, "toggle")
+      params:set_action('sensor-'..i, function(sensor)
+			   osc.send(pd_osc, "/sensor-"..i, {sensor})
+      end)
+
+      -- Tune
+      params:add_taper('tune-'..i, ' ↳tune '..i, 0, 127, math.random(127))
+      params:set_action('tune-'..i, function(tune)
+			   osc.send(pd_osc, "/tune-"..i, {tune})
+			   tune_uis[i]:set_value(tune)
+      end)
+      params:set('tune-'..i, params:get('tune-'..i))
+   end
+
    -- 5678
-   params:add_group('5678', "5 6 7 8", 10)
+   params:add_separator("group 5678")
+   params:add_group('5678', "5678", 10)
 
    params:add_taper('hold-5678', 'hold', 0, 127, 10+math.random(startrnd))
    params:set_action('hold-5678', function(freq)
@@ -174,8 +186,8 @@ function init_params()
    params:set('pitch-5678', params:get('pitch-5678'))
 
    -- 56
-   params:add_separator("5 6")
-   params:add_option('source-56', 'source', {'7 8', 'off', 'lfo'}, 1)
+   params:add_separator("56")
+   params:add_option('source-56', 'source', {'78', 'off', 'lfo'}, 1)
    params:set_action('source-56', function(src)
 			osc.send(pd_osc, "/source-56", {src-1})
 			-- source_56_ui:set_value(src-1)
@@ -197,9 +209,9 @@ function init_params()
    params:set('sharp-56', params:get('sharp-56'))
 
    -- 78
-   params:add_separator("7 8")
+   params:add_separator("78")
 
-   params:add_option('source-78', 'source', {'5 6', 'off', 'lfo'}, 1)
+   params:add_option('source-78', 'source', {'56', 'off', 'lfo'}, 1)
    params:set_action('source-78', function(src)
 			osc.send(pd_osc, "/source-78", {src-1})
 			-- source_78_ui:set_value(src-1)
@@ -220,8 +232,8 @@ function init_params()
    end)
    params:set('sharp-78', params:get('sharp-78'))
 
-   -- Oscillators
-   for i = 1,8 do
+   -- Oscillators 5 to 8
+   for i = 5,8 do
       -- Sensor
       params:add_binary('sensor-'..i, 'sensor '..i, "toggle")
       params:set_action('sensor-'..i, function(sensor)
@@ -361,6 +373,14 @@ function init_params()
    -- 			-- osc.send(pd_osc, "/dst-vol", {val})
    -- 			-- dst_vol_ui:set_value(val)
    -- end)
+
+
+   params:add_option('midi-dev', "midi dev", get_midi_device_names())
+   params:set_action('midi-dev', function(val)
+			midi_dev = midi.connect(val)
+			midi_dev.event = midi_handler
+   end)
+   params:add_number('midi-ch', "midi channel", 1,  16, 1)
 end
 
 -- # Build UI
