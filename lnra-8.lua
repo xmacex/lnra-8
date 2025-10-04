@@ -1,16 +1,15 @@
 --           LNRA-8
---       ^ ^  o o ^ ^ o o
---       o o o o o o o
---          o  ^ ^  o
---        ^ o ^ ^ ^ o ^
---       o o o o o o o o
---       O O O O O O O O
---       8 8 8 8 8 8 8 8
 --
-
--- First a bash script starts a headless Pd with the LIRA-8 Pd patch.
--- Second the patch listens to UDP OSC messages in port 10121.
--- Finally when the norns script exits, all running Pd processes are killed (crude!)
+--              n
+--      o   g a    s m
+--        r       i     i c
+--                     z
+--       y   t h   s       r
+--     s   n     e   i   e
+--
+-- LYRA-8 synth by SOMA Labs
+-- LIRA-8 pd patch Mike Moreno
+-- LNRA-8 norns wrapper xmacex
 
 DEBUG = false
 
@@ -94,16 +93,16 @@ function init_params()
    params:add_number('midi-ch', "midi channel", 1,  16, 1)
 
    -- 1234
-   params:add_group('1234', "1234", 8)
+   params:add_group('1234', "1 2 3 4", 10)
 
-   params:add_taper('hold-1234', 'hold 1234', 0, 127, 60)
+   params:add_taper('hold-1234', 'hold', 0, 127, 60)
    params:set_action('hold-1234', function(freq)
 			osc.send(pd_osc, "/hold-1234", {freq})
 			hold_1234_ui:set_value(freq)
    end)
    params:set('hold-1234', params:get('hold-1234'))
 
-   params:add_taper('pitch-1234', 'pitch 1234', 0, 127, 30)
+   params:add_taper('pitch-1234', 'pitch', 0, 127, 30)
    params:set_action('pitch-1234', function(freq)
 			osc.send(pd_osc, "/pitch-1234", {freq})
 			pitch_1234_ui:set_value(freq)
@@ -111,21 +110,22 @@ function init_params()
    params:set('pitch-1234', params:get('pitch-1234'))
 
    -- 12
-   params:add_option('source-12', 'source 12', {'3 and 4', 'off', 'lfo-cv'}, 1)
+   params:add_separator("1 2")
+   params:add_option('source-12', 'source', {'3 4', 'off', 'lfo'}, 1)
    params:set_action('source-12', function(src)
 			osc.send(pd_osc, "/source-12", {src-1})
 			-- source_12_ui:set_value(src-1)
    end)
    params:set('source-12', params:get('source-12'))
 
-   params:add_taper('mod-12', 'mod 12', 0, 127, 60)
+   params:add_taper('mod-12', ' ↳mod', 0, 127, 60)
    params:set_action('mod-12', function(modulation)
 			osc.send(pd_osc, "/mod-12", {modulation})
 			mod_12_ui:set_value(modulation)
    end)
    params:set('mod-12', params:get('mod-12'))
 
-   params:add_taper('sharp-12', 'sharp 12', 0, 127, 60)
+   params:add_taper('sharp-12', 'sharp', 0, 127, 60)
    params:set_action('sharp-12', function(sharp)
 			osc.send(pd_osc, "/sharp-12", {sharp})
 			sharp_12_ui:set_value(sharp)
@@ -133,21 +133,22 @@ function init_params()
    params:set('sharp-12', params:get('sharp-12'))
 
    -- 34
-   params:add_option('source-34', 'source 34', {'1 and 2', 'off', 'lfo-cv'}, 1)
+   params:add_separator("3 4")
+   params:add_option('source-34', 'source', {'1 2', 'off', 'lfo'}, 1)
    params:set_action('source-34', function(src)
 			osc.send(pd_osc, "/source-34", {src-1})
 			-- source_34_ui:set_value(src-1)
    end)
    params:set('source-34', params:get('source-34'))
 
-   params:add_taper('mod-34', 'mod 34', 0, 127, 60)
+   params:add_taper('mod-34', ' ↳mod', 0, 127, 60)
    params:set_action('mod-34', function(modulation)
 			osc.send(pd_osc, "/mod-34", {modulation})
 			mod_34_ui:set_value(modulation)
    end)
    params:set('mod-34', params:get('mod-34'))
 
-   params:add_taper('sharp-34', 'sharp 34', 0, 127, 60)
+   params:add_taper('sharp-34', 'sharp', 0, 127, 60)
    params:set_action('sharp-34', function(sharp)
 			osc.send(pd_osc, "/sharp-34", {sharp})
 			sharp_34_ui:set_value(sharp)
@@ -155,16 +156,16 @@ function init_params()
    params:set('sharp-34', params:get('sharp-34'))
 
    -- 5678
-   params:add_group('5678', "5678", 8)
+   params:add_group('5678', "5 6 7 8", 10)
 
-   params:add_taper('hold-5678', 'hold 5678', 0, 127, 10)
+   params:add_taper('hold-5678', 'hold', 0, 127, 10)
    params:set_action('hold-5678', function(freq)
 			osc.send(pd_osc, "/hold-5678", {freq})
 			hold_5678_ui:set_value(freq)
    end)
    params:set('hold-5678', params:get('hold-5678'))
 
-   params:add_taper('pitch-5678', 'pitch 5678', 0, 127, 80)
+   params:add_taper('pitch-5678', 'pitch', 0, 127, 80)
    params:set_action('pitch-5678', function(freq)
 			osc.send(pd_osc, "/pitch-5678", {freq})
 			pitch_5678_ui:set_value(freq)
@@ -172,21 +173,22 @@ function init_params()
    params:set('pitch-5678', params:get('pitch-5678'))
 
    -- 56
-   params:add_option('source-56', 'source 56', {'7 and 8', 'off', 'lfo-cv'}, 1)
+   params:add_separator("5 6")
+   params:add_option('source-56', 'source', {'7 8', 'off', 'lfo'}, 1)
    params:set_action('source-56', function(src)
 			osc.send(pd_osc, "/source-56", {src-1})
 			-- source_56_ui:set_value(src-1)
    end)
    params:set('source-56', params:get('source-56'))
 
-   params:add_taper('mod-56', 'mod 56', 0, 127, 60)
+   params:add_taper('mod-56', ' ↳mod', 0, 127, 60)
    params:set_action('mod-56', function(modulation)
 			osc.send(pd_osc, "/mod-56", {modulation})
 			mod_56_ui:set_value(modulation)
    end)
    params:set('mod-56', params:get('mod-56'))
 
-   params:add_taper('sharp-56', 'sharp 56', 0, 127, 60)
+   params:add_taper('sharp-56', 'sharp', 0, 127, 60)
    params:set_action('sharp-56', function(sharp)
 			osc.send(pd_osc, "/sharp-56", {sharp})
 			sharp_56_ui:set_value(sharp)
@@ -194,21 +196,23 @@ function init_params()
    params:set('sharp-56', params:get('sharp-56'))
 
    -- 78
-   params:add_option('source-78', 'source 78', {'5 and 6', 'off', 'lfo-cv'}, 1)
+   params:add_separator("7 8")
+
+   params:add_option('source-78', 'source', {'5 6', 'off', 'lfo'}, 1)
    params:set_action('source-78', function(src)
 			osc.send(pd_osc, "/source-78", {src-1})
 			-- source_78_ui:set_value(src-1)
    end)
    params:set('source-78', params:get('source-34'))
 
-   params:add_taper('mod-78', 'mod 78', 0, 127, 60)
+   params:add_taper('mod-78', ' ↳mod', 0, 127, 60)
    params:set_action('mod-78', function(modulation)
 			osc.send(pd_osc, "/mod-78", {modulation})
 			mod_78_ui:set_value(modulation)
    end)
    params:set('mod-78', params:get('mod-78'))
 
-   params:add_taper('sharp-78', 'sharp 78', 0, 127, 60)
+   params:add_taper('sharp-78', 'sharp', 0, 127, 60)
    params:set_action('sharp-78', function(sharp)
 			osc.send(pd_osc, "/sharp-78", {sharp})
 			sharp_78_ui:set_value(sharp)
@@ -217,19 +221,19 @@ function init_params()
 
    -- Oscillators
    for i = 1,8 do
-      -- Tune
-      params:add_taper('tune-'..i, 'tune '..i, 0, 127, math.random(127))
-      params:set_action('tune-'..i, function(tune)
-			   osc.send(pd_osc, "/tune-"..i, {tune})
-			   tune_uis[i]:set_value(tune)
-      end)
-      params:set('tune-'..i, params:get('tune-'..i))
-
       -- Sensor
       params:add_binary('sensor-'..i, 'sensor '..i, "toggle")
       params:set_action('sensor-'..i, function(sensor)
 			   osc.send(pd_osc, "/sensor-"..i, {sensor})
       end)
+
+      -- Tune
+      params:add_taper('tune-'..i, ' ↳tune '..i, 0, 127, math.random(127))
+      params:set_action('tune-'..i, function(tune)
+			   osc.send(pd_osc, "/tune-"..i, {tune})
+			   tune_uis[i]:set_value(tune)
+      end)
+      params:set('tune-'..i, params:get('tune-'..i))
    end
 
    -- The things in the middle of the panel
@@ -243,14 +247,14 @@ function init_params()
 			osc.send(pd_osc, "/vibrato", {on})
    end)
 
-   params:add_option('switch', 'switch', {'34 > 56', '78 > 12'})
+   params:add_option('switch', 'fm structure', {'34 > 56', '78 > 12'})
    params:set_action('switch', function(val)
 			osc.send(pd_osc, "/switch", {val-1})
    end)
 
    -- Hyper LFO
    params:add_group('hyperlfo', "hyper lfo", 4)
-   params:add_taper('f-a', 'f-a', 0, 127, math.random(127))
+   params:add_taper('f-a', 'freq a', 0, 127, math.random(127))
    params:set_action('f-a', function(val)
 			if DEBUG then print("f-a: "..val) end
 			osc.send(pd_osc, "/f-a", {val})
@@ -258,7 +262,7 @@ function init_params()
    end)
    params:set('f-a', params:get('f-a'))
 
-   params:add_taper('f-b', 'f-b', 0, 127, math.random(127))
+   params:add_taper('f-b', 'freq b', 0, 127, math.random(127))
    params:set_action('f-b', function(val)
 			if DEBUG then print("f-b: "..val) end
 			osc.send(pd_osc, "/f-b", {val})
@@ -333,7 +337,7 @@ function init_params()
    end)
 
    -- Distortion
-   params:add_group('distortion', "distortion", 3)
+   params:add_group('distortion', "distortion", 2)
 
    params:add_taper('dst-drv', "drv", 0, 127)
    params:set_action('dst-drv', function(val)
@@ -349,12 +353,12 @@ function init_params()
 			-- dst_mix_ui:set_value(val)
    end)
 
-   params:add_taper('dst-vol', "vol (disabled, use norns vol)", 0, 127)
-   params:set_action('dst-vol', function(val)
-			if DEBUG then print("dst-vol: "..val) end
-			print("use norns volume instead")
-			-- osc.send(pd_osc, "/dst-vol", {val})
-			-- dst_vol_ui:set_value(val)
+   -- params:add_taper('dst-vol', "vol (disabled, use norns vol)", 0, 127)
+   -- params:set_action('dst-vol', function(val)
+   -- 			if DEBUG then print("dst-vol: "..val) end
+   -- 			print("use norns volume instead")
+   -- 			-- osc.send(pd_osc, "/dst-vol", {val})
+   -- 			-- dst_vol_ui:set_value(val)
    end)
 end
 
