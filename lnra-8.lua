@@ -24,8 +24,21 @@ local WIDTH    = 128
 local HEIGHT   = 64
 local shifted  = false
 encs={}
-encs[2] = 'pitch-1234'
-encs[3] = 'pitch-5678'
+encs[2] = {p='pitch-1234', x=3, y=3}
+encs[3] = {p='pitch-5678', x=7, y=3}
+
+grid_map = {}
+grid_map[3] = {[3]='pitch-1234', [7]='pitch-5678'}
+grid_map[6] = {
+   [1]='mod-12', [2]='sharp-12', [3]='sharp-34', [4]='mod-34',
+   [5]='mod-56', [6]='sharp-56', [7]='sharp-78', [8]='mod-78'
+}
+grid_map[7] = {}
+for i=1,8 do
+   grid_map[7][i] = 'tune-'..i
+end
+
+-- {} []
 
 local startrnd = 32
 local tune_uis = {}
@@ -450,67 +463,64 @@ function remove_title(dial)
    dial.title = ""
 end
 
-
 function init_grid()
    g = grid.connect()
    g.key = grid_key_handler
+   draw_grid_layout()
+   g:led(3,3,4)
+   g:led(7,3,4)
+end
 
+function draw_grid_layout()
    -- pitch
-   g:led(3, 3, 4+4)
-   g:led(7, 3, 4+4)
+   g:led(3, 3, 4)
+   g:led(7, 3, 4)
 
-   -- oscillators
+   -- mods and sharps
+   g:led(1, 6, 1)
+   g:led(4, 6, 1)
+   g:led(5, 6, 1)
+   g:led(8, 6, 1)
+
+   g:led(2, 6, 3)
+   g:led(3, 6, 3)
+   g:led(6, 6, 3)
+   g:led(7, 6, 3)
+
+   -- tunes
    for x=1,8 do
       g:led(x, 7, 4)
    end
 
    -- sensors
    for x=1,8 do
-      g:led(x, 8, 4)
+      g:led(x, 8, 1)
    end
    g:refresh()
 end
 
 function grid_key_handler(x,y,z)
-   -- pitches
-   if y==3 then			-- 3: pitch
-      if x==3 then
-	 encs[2] = 'pitch-1234'
-	 g:led(3, 3, 4+4)
-      elseif x==7 then
-	 encs[3] = 'pitch-5678'
-	 g:led(3, 7, 4+4)
+   if y<=7 then
+      draw_grid_layout()
+      if x<=4 then
+	 encs[2]['p'] = grid_map[y][x]
+	 encs[2]['x'] = x
+	 encs[2]['y'] = y
+      else
+	 encs[3]['p'] = grid_map[y][x]
+	 encs[3]['x'] = x
+	 encs[3]['y'] = y
       end
-
-      for i=1,8 do
-	 g:led(i,7,4)
-      end
-   elseif y==7 then 		-- 7: tune
-      if x <= 4 then
-	 encs[2] = 'tune-'..x
-	 for i=1,4 do
-	    g:led(i,7,4)
-	 end
-	 g:led(3, 3, 4)
-      elseif x >= 5 then
-	 encs[3] = 'tune-'..x
-	 for i=5,8 do
-	    g:led(i,7,4)
-	 end
-	 g:led(7, 3, 4)
-
-      end
-
-      g:led(x, y, 4+4)
-   end
-
-   -- sensors
-   if y==8 then
+      g:led(encs[2]['x'], encs[2]['y'], 8)
+      g:led(encs[3]['x'], encs[3]['y'], 8)
+      -- sensors
+   elseif y==8 then		-- 8: sensors
       -- pad x
       local par="sensor-"..x
       params:set(par, z)
       g:led(x, y, 4+4*z)
    end
+
    g:refresh()
 end
 
@@ -526,7 +536,7 @@ function enc(n, d)
       else
 	 -- params:delta(encs[n], d)
 	 -- params:delta('hold-1234', d)
-	 process_enc(n, d)
+	 enc_handler(n, d)
       end
    elseif n == 3 then
       if shifted then
@@ -534,13 +544,13 @@ function enc(n, d)
       else
 	 -- params:delta('hold-5678', d)
 	 -- params:delta(encs[n], d)
-	 process_enc(n, d)
+	 enc_handler(n, d)
       end
    end
 end
 
-function process_enc(n, d)
-   params:delta(encs[n], d)
+function enc_handler(n, d)
+   params:delta(encs[n]['p'], d)
 end
 
 -- K1 pressed. It's the shift.
