@@ -453,6 +453,11 @@ end
 
 function init_grid()
    g = grid.connect()
+   g.key = grid_key_handler
+
+   -- pitch
+   g:led(3, 3, 4)
+   g:led(7, 3, 4)
 
    -- oscillators
    for x=1,8 do
@@ -464,27 +469,49 @@ function init_grid()
       g:led(x, 8, 4)
    end
    g:refresh()
+end
 
-   g.key=function(x,y,z)
-      -- oscillators
-      if y==7 then
-	 for i=1,8 do
+function grid_key_handler(x,y,z)
+   -- pitches
+   if y==3 then			-- 3: pitch
+      if x==3 then
+	 encs[2] = 'pitch-1234'
+	 g:led(3, 3, 4+4)
+      elseif x==7 then
+	 encs[3] = 'pitch-5678'
+	 g:led(3, 7, 4+4)
+      end
+
+      for i=1,8 do
+	 g:led(i,7,4)
+      end
+   elseif y==7 then 		-- 7: tune
+      if x <= 4 then
+	 encs[2] = 'tune-'..x
+	 for i=1,4 do
 	    g:led(i,7,4)
 	 end
-	 encs[2] = 'tune-'..x
-	 g:led(x, y, 4+4)
-	 g:refresh()
+	 g:led(3, 3, 4)
+      elseif x >= 5 then
+	 encs[3] = 'tune-'..x
+	 for i=5,8 do
+	    g:led(i,7,4)
+	 end
+	 g:led(7, 3, 4)
+
       end
 
-      -- sensors
-      if y==8 then
-	 -- pad x
-	 local par="sensor-"..x
-	 params:set(par, z)
-	 g:led(x, y, 4+4*z)
-	 g:refresh()
-      end
+      g:led(x, y, 4+4)
    end
+
+   -- sensors
+   if y==8 then
+      -- pad x
+      local par="sensor-"..x
+      params:set(par, z)
+      g:led(x, y, 4+4*z)
+   end
+   g:refresh()
 end
 
 -- # Interactions.
