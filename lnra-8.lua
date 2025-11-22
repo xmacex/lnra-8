@@ -23,6 +23,9 @@ local midi_dev    = nil
 local WIDTH    = 128
 local HEIGHT   = 64
 local shifted  = false
+encs={}
+encs[2] = 'pitch-1234'
+encs[3] = 'pitch-5678'
 
 local startrnd = 32
 local tune_uis = {}
@@ -450,12 +453,30 @@ end
 
 function init_grid()
    g = grid.connect()
-   for i=1,8 do
-      g:led(i, 8, 4)
+
+   -- oscillators
+   for x=1,8 do
+      g:led(x, 7, 4)
+   end
+
+   -- sensors
+   for x=1,8 do
+      g:led(x, 8, 4)
    end
    g:refresh()
 
    g.key=function(x,y,z)
+      -- oscillators
+      if y==7 then
+	 for i=1,8 do
+	    g:led(i,7,4)
+	 end
+	 encs[2] = 'tune-'..x
+	 g:led(x, y, 4+4)
+	 g:refresh()
+      end
+
+      -- sensors
       if y==8 then
 	 -- pad x
 	 local par="sensor-"..x
@@ -476,15 +497,23 @@ function enc(n, d)
       if shifted then
 	 params:delta('pitch-1234', d)
       else
-	 params:delta('hold-1234', d)
+	 -- params:delta(encs[n], d)
+	 -- params:delta('hold-1234', d)
+	 process_enc(n, d)
       end
    elseif n == 3 then
       if shifted then
 	 params:delta('pitch-5678', d)
       else
-	 params:delta('hold-5678', d)
+	 -- params:delta('hold-5678', d)
+	 -- params:delta(encs[n], d)
+	 process_enc(n, d)
       end
    end
+end
+
+function process_enc(n, d)
+   params:delta(encs[n], d)
 end
 
 -- K1 pressed. It's the shift.
