@@ -17,8 +17,8 @@ UI = require('ui')
 MU = require('musicutil')
 
 local engine_boot = _path.this.lib.."lnra-8.sh"
-pd_osc      = {"localhost", 10121}
-midi_dev    = nil
+local pd_osc      = {"localhost", 10121}
+local midi_dev    = nil
 
 local WIDTH    = 128
 local HEIGHT   = 64
@@ -88,7 +88,7 @@ end
 function init_params()
    -- 1234
    params:add_separator("group 1234")
-   params:add_group('1234', "1234", 10)
+   params:add_group('1234', "1234", 12)
 
    params:add_taper('hold-1234', 'hold', 0, 127, 63)
    params:set_action('hold-1234', function(freq)
@@ -106,6 +106,12 @@ function init_params()
 
    -- 12
    params:add_separator("12")
+
+   params:add_binary('fast-12', 'fast', "toggle") -- TODO are the fasts working?
+   params:set_action('fast-12', function(val)
+			osc.send(pd_osc, "/fast-12", {val-1})
+   end)
+
    params:add_option('source-12', 'source', {'34', 'off', 'lfo'}, 1)
    params:set_action('source-12', function(src)
 			osc.send(pd_osc, "/source-12", {src-1})
@@ -129,6 +135,12 @@ function init_params()
 
    -- 34
    params:add_separator("34")
+
+   params:add_binary('fast-34', 'fast', "toggle") -- TODO are the fasts working?
+   params:set_action('fast-34', function(val)
+			osc.send(pd_osc, "/fast-34", {val-1})
+   end)
+
    params:add_option('source-34', 'source', {'12', 'off', 'lfo'}, 1)
    params:set_action('source-34', function(src)
 			osc.send(pd_osc, "/source-34", {src-1})
@@ -169,7 +181,7 @@ function init_params()
 
    -- 5678
    params:add_separator("group 5678")
-   params:add_group('5678', "5678", 10)
+   params:add_group('5678', "5678", 12)
 
    params:add_taper('hold-5678', 'hold', 0, 127, 10+math.random(startrnd))
    params:set_action('hold-5678', function(freq)
@@ -187,6 +199,12 @@ function init_params()
 
    -- 56
    params:add_separator("56")
+
+   params:add_binary('fast-56', 'fast', "toggle") -- TODO are the fasts working?
+   params:set_action('fast-56', function(val)
+			osc.send(pd_osc, "/fast-56", {val-1})
+   end)
+
    params:add_option('source-56', 'source', {'78', 'off', 'lfo'}, 1)
    params:set_action('source-56', function(src)
 			osc.send(pd_osc, "/source-56", {src-1})
@@ -210,6 +228,11 @@ function init_params()
 
    -- 78
    params:add_separator("78")
+
+   params:add_binary('fast-78', 'fast', "toggle") -- TODO are the fasts working?
+   params:set_action('fast-78', function(val)
+			osc.send(pd_osc, "/fast-78", {val-1})
+   end)
 
    params:add_option('source-78', 'source', {'56', 'off', 'lfo'}, 1)
    params:set_action('source-78', function(src)
