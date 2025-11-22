@@ -48,6 +48,7 @@ function init()
    -- Initialize everything.
    start_pd()
    init_params()
+   init_grid()
    init_ui()
 
    -- Get an UI loop going.
@@ -446,6 +447,24 @@ function remove_title(dial)
    dial.title = ""
 end
 
+
+function init_grid()
+   g = grid.connect()
+   for i=1,8 do
+      g:led(i, 8, 4)
+   end
+   g:refresh()
+
+   g.key=function(x,y,z)
+      if y==8 then
+	 -- pad x
+	 local par="sensor-"..x
+	 params:set(par, z)
+	 g:led(x, y, 4+4*z)
+	 g:refresh()
+      end
+   end
+end
 
 -- # Interactions.
 
