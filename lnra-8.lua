@@ -456,8 +456,8 @@ function init_grid()
    g.key = grid_key_handler
 
    -- pitch
-   g:led(3, 3, 4)
-   g:led(7, 3, 4)
+   g:led(3, 3, 4+4)
+   g:led(7, 3, 4+4)
 
    -- oscillators
    for x=1,8 do
