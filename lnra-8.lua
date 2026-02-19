@@ -24,20 +24,15 @@ local WIDTH    = 128
 local HEIGHT   = 64
 local shifted  = false
 encs={}
-encs[2] = {p='pitch-1234', x=3, y=3}
+encs[2] = {p='pitch-1234', x=2, y=3}
 encs[3] = {p='pitch-5678', x=7, y=3}
 
 grid_map = {}
-grid_map[2] = {[3]='hold-1234',  [7]='hold-5678'}
-grid_map[3] = {[3]='pitch-1234', [7]='pitch-5678'}
-grid_map[5] = {
-   [2]='source-12', [3]='source-34',
-   [6]='source-56', [7]='source-78'
-}
-grid_map[6] = {
-   [1]='mod-12', [2]='sharp-12', [3]='sharp-34', [4]='mod-34',
-   [5]='mod-56', [6]='sharp-56', [7]='sharp-78', [8]='mod-78'
-}
+grid_map[1] = {[1]='f-a',    [2]='f-b',        [3]='mod-1',    [4]='mod-2', [5]='feedback',  [6]='del-mix',   [7]='dst-drv',  [8]='dst-mix'}
+grid_map[2] = {              [2]='hold-1234',  [3]='time-1',   [4]='time-2',                                 [7]='hold-5678'               }
+grid_map[3] = {              [2]='pitch-1234',                                                               [7]='pitch-5678'              }
+grid_map[5] = {              [2]='source-12',  [3]='source-34',                              [6]='source-56', [7]='source-78'              }
+grid_map[6] = {[1]='mod-12', [2]='sharp-12',   [3]='sharp-34', [4]='mod-34',   [5]='mod-56', [6]='sharp-56',  [7]='sharp-78', [8]='mod-78' }
 grid_map[7] = {}
 for i=1,8 do
    grid_map[7][i] = 'tune-'..i
@@ -317,7 +312,7 @@ function init_params()
    params:set_action('f-a', function(val)
 			if DEBUG then print("f-a: "..val) end
 			osc.send(pd_osc, "/f-a", {val})
-			-- f_a_ui:set_value(val)
+			f_a_ui:set_value(val)
    end)
    params:set('f-a', params:get('f-a'))
 
@@ -325,7 +320,7 @@ function init_params()
    params:set_action('f-b', function(val)
 			if DEBUG then print("f-b: "..val) end
 			osc.send(pd_osc, "/f-b", {val})
-			-- f_b_ui:set_value(val)
+			f_b_ui:set_value(val)
    end)
    params:set('f-b', params:get('f-b'))
 
@@ -348,28 +343,28 @@ function init_params()
    params:set_action('mod-1', function(val)
 			if DEBUG then print("mod-1: "..val) end
 			osc.send(pd_osc, "/mod-1", {val})
-			-- mod_1_ui:set_value(val)
+			mod_1_ui:set_value(val)
    end)
 
    params:add_taper('time-1', "time 1", 0, 127)
    params:set_action('time-1', function(val)
 			if DEBUG then print("time-1: "..val) end
 			osc.send(pd_osc, "/time-1", {val})
-			-- time_1_ui:set_value(val)
+			time_1_ui:set_value(val)
    end)
 
    params:add_taper('mod-2', "mod 2", 0, 127)
    params:set_action('mod-2', function(val)
 			if DEBUG then print("mod-2: "..val) end
 			osc.send(pd_osc, "/mod-2", {val})
-			-- mod_2_ui:set_value(val)
+			mod_2_ui:set_value(val)
    end)
 
    params:add_taper('time-2', "time 2", 0, 127)
    params:set_action('time-2', function(val)
 			if DEBUG then print("time-2: "..val) end
 			osc.send(pd_osc, "/time-2", {val})
-			-- time_2_ui:set_value(val)
+			time_2_ui:set_value(val)
    end)
 
    params:add_option('lfo-wav', "lfo wav", {"tri", "sqr"})
@@ -382,7 +377,7 @@ function init_params()
    params:set_action('feedback', function(val)
 			if DEBUG then print("feedback: "..val) end
 			osc.send(pd_osc, "/feedback", {val})
-			-- feedback_ui:set_value(val)
+			feedback_ui:set_value(val)
    end)
 
    params:add_option('del-mod', "del mod", {"self", "off", "lfo"})
@@ -392,7 +387,7 @@ function init_params()
    params:set_action('del-mix', function(val)
 			if DEBUG then print("del-mix: "..val) end
 			osc.send(pd_osc, "/del-mix", {val})
-			-- del_mix_ui:set_value(val)
+			del_mix_ui:set_value(val)
    end)
 
    -- Distortion
@@ -402,14 +397,14 @@ function init_params()
    params:set_action('dst-drv', function(val)
 			if DEBUG then print("dst-drv: "..val) end
 			osc.send(pd_osc, "/dst-drv", {val})
-			-- dst_drv_ui:set_value(val)
+			dst_drv_ui:set_value(val)
    end)
 
    params:add_taper('dst-mix', "mix", 0, 127)
    params:set_action('dst-mix', function(val)
 			if DEBUG then print("dst-mix: "..val) end
 			osc.send(pd_osc, "/dst-mix", {val})
-			-- dst_mix_ui:set_value(val)
+			dst_mix_ui:set_value(val)
    end)
 
    -- params:add_taper('dst-vol', "vol (disabled, use norns vol)", 0, 127)
@@ -454,6 +449,21 @@ end
 -- # Build UI
 
 function init_ui()
+   -- fx
+   f_a_ui      = UI.Slider.new(8,          0, 1, 10, params:get('f-a'),      0, 127, nil, 'up')
+   f_b_ui      = UI.Slider.new(10,         0, 1, 10, params:get('f-b'),      0, 127, nil, 'up')
+
+   mod_1_ui    = UI.Slider.new(WIDTH/2-12, 0, 1, 10, params:get('f-b'),      0, 127, nil, 'up')
+   time_1_ui   = UI.Slider.new(WIDTH/2-10, 0, 1, 10, params:get('f-b'),      0, 127, nil, 'up')
+   mod_2_ui    = UI.Slider.new(WIDTH/2-6,  0, 1, 10, params:get('f-b'),      0, 127, nil, 'up')
+   time_2_ui   = UI.Slider.new(WIDTH/2-4,  0, 1, 10, params:get('f-b'),      0, 127, nil, 'up')
+
+   feedback_ui = UI.Slider.new(WIDTH/2+4,  0, 1, 10, params:get('feedback'), 0, 127, nil, 'up')
+   del_mix_ui  = UI.Slider.new(WIDTH/2+6,  0, 3, 10, params:get('del-mix'),  0, 127, nil, 'up')
+
+   dst_drv_ui  = UI.Slider.new(WIDTH-10,   0, 1, 10, params:get('dst-drv'),  0, 127, nil, 'up')
+   dst_mix_ui  = UI.Slider.new(WIDTH-8,    0, 3, 10, params:get('dst-mix'),  0, 127, nil, 'up')
+
    -- 1234
    hold_1234_ui  = UI.Dial.new(WIDTH/8*2-7, 7, 15, params:get("hold-1234"), 0, 127)
    pitch_1234_ui = UI.Dial.new(WIDTH/8*2-7, 7+15, 15, params:get("pitch-1234"), 0, 127)
@@ -540,7 +550,6 @@ function grid_key_handler(x,y,z)
 	    encs[2]['p'] = grid_map[y][x]
 	    encs[2]['x'] = x
 	    encs[2]['y'] = y
-	    g:led(x,y,8)
 	 else
 	    encs[3]['p'] = grid_map[y][x]
 	    encs[3]['x'] = x
@@ -563,6 +572,17 @@ end
 -- Redraw the screen.
 function redraw()
    screen.clear()
+
+   f_a_ui:redraw()
+   f_b_ui:redraw()
+   mod_1_ui:redraw()
+   time_1_ui:redraw()
+   feedback_ui:redraw()
+   del_mix_ui:redraw()
+   mod_2_ui:redraw()
+   time_2_ui:redraw()
+   dst_drv_ui:redraw()
+   dst_mix_ui:redraw()
 
    -- the two sides
    hold_1234_ui:redraw()
@@ -643,6 +663,7 @@ function draw_grid_row(row, brightness)
 end
 
 function draw_grid_layout()
+   draw_grid_row(1) -- mod and fx
    draw_grid_row(2) -- hold
    draw_grid_row(3) -- pitch
    draw_grid_row(5) -- sources
