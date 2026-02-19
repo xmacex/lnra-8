@@ -70,6 +70,7 @@ function init()
    start_pd()
    init_params()
    init_grid()
+   init_crow()
    init_ui()
 
    -- Get an UI loop going.
@@ -437,6 +438,19 @@ function init_grid()
    g:refresh()
 end
 
+norns.crow.add = init_crow
+
+function init_crow()
+   crow.input[1].mode('stream', 0.01)
+   crow.input[1].stream = function(v)
+      params:set('pitch-1234', util.linlin(-5, 10, 0, 127, v))
+   end
+   crow.input[2].mode('stream', 0.01)
+   crow.input[2].stream = function(v)
+      params:set('pitch-5678', util.linlin(-5, 10, 0, 127, v))
+   end
+end
+
 -- # Build UI
 
 function init_ui()
@@ -595,6 +609,18 @@ function redraw()
    sharp_34_ui:redraw()
    sharp_56_ui:redraw()
    sharp_78_ui:redraw()
+
+   -- crow takeover!
+   if norns.crow.connected() then
+      screen.level(5)
+      screen.font_face(11)
+      screen.font_size(10)
+      screen.move(pitch_1234_ui.x+pitch_1234_ui.size/2, pitch_1234_ui.y+pitch_1234_ui.size/2+3)
+      screen.text_center("crow")
+      screen.move(pitch_5678_ui.x+pitch_5678_ui.size/2, pitch_5678_ui.y+pitch_5678_ui.size/2+3)
+      screen.text_center("crow")
+      screen.stroke()
+   end
 
    -- a bit of logo
    screen.level(5)

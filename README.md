@@ -23,7 +23,7 @@ LIRA-8, thereby *lnra-8* has a lot of controls, so you will probably want MIDI a
 
 ### Documentation
 
-The main part is represented on the norns screen. You can change the hold (=droning) of left and right sides with <kbd>E2</kbd> and <kbd>E3</kbd>, and their pitches with <kbd>K1</kbd>+<kbd>E2</kbd> and <kbd>K1</kbd>+<kbd>E3</kbd> respectively. If you choose a MIDI controller and a channel in the parameters, you can use eight white keys from middle-C upwards to hold the eight sensors. 
+The main part is represented on the norns screen. You can change the hold (=droning) of left and right sides with <kbd>E2</kbd> and <kbd>E3</kbd>, and their pitches with <kbd>K1</kbd>+<kbd>E2</kbd> and <kbd>K1</kbd>+<kbd>E3</kbd> respectively. If you have a grid, using the screen as a guide you can use it to move <kbd>E2</kbd> and <kbd>E3</kbd> to other parameters of the left and right side of the synth, respectively. If you choose a MIDI controller and a channel in the parameters, you can use eight white keys from middle-C upwards to hold the eight sensors. If you have a crow, the two crow inputs will take over the 1+2+3+4 and 5+6+7+8 pitches.
 
 ![|720x406](lnra-8.gif)
 
@@ -40,8 +40,8 @@ It seems to work with at least some of the [fx mod](https://llllllll.co/t/fx-mod
 ### Download
 
 1. install Pure Data (Pd) on your norns
-   - either `sudo apt install puredata` over [ssh](https://monome.org/docs/norns/advanced-access/#ssh)
-   - or `os.execute("sudo apt install puredata")` in Maiden REPL
+   - either `sudo apt update` and `sudo apt install puredata` over [ssh](https://monome.org/docs/norns/advanced-access/#ssh)
+   - or `os.execute("sudo apt update && sudo apt install puredata")` in Maiden REPL
 2. Install this script with `;install https://github.com/xmacex/lnra-8`
 3. Cross fingers and hope it will work.
 
