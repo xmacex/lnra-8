@@ -23,7 +23,11 @@ LIRA-8, thereby *lnra-8* has a lot of controls, so you will probably want MIDI a
 
 ### Documentation
 
-The main part is represented on the norns screen. You can change the hold (=droning) of left and right sides with <kbd>E2</kbd> and <kbd>E3</kbd>, and their pitches with <kbd>K1</kbd>+<kbd>E2</kbd> and <kbd>K1</kbd>+<kbd>E3</kbd> respectively. If you have a grid, using the screen as a guide you can use it to move <kbd>E2</kbd> and <kbd>E3</kbd> to other parameters of the left and right side of the synth, respectively. If you choose a MIDI controller and a channel in the parameters, you can use eight white keys from middle-C upwards to hold the eight sensors. If you have a crow, the two crow inputs will take over the 1+2+3+4 and 5+6+7+8 pitches.
+The main part is represented on the norns screen.
+
+You can change the pitch (=droning) of left and right sides with <kbd>E2</kbd> and <kbd>E3</kbd>, and their holds with <kbd>K1</kbd>+<kbd>E2</kbd> and <kbd>K1</kbd>+<kbd>E3</kbd> respectively. If you have a grid, using the screen as a guide you can use it to move <kbd>E2</kbd> and <kbd>E3</kbd> to other parameters of the left and right side of the synth, respectively. The shifted with <kbd>K1</kbd> will remain on the two holds. <kbd>E1</kbd> mixes in both the mod delay and distortion.
+
+If you choose a MIDI controller and a channel in the parameters, you can use eight white keys from middle-C upwards to hold the eight sensors. If you have a crow, the two crow inputs will take over the 1234 and 5678 pitches.
 
 ![|720x406](lnra-8.gif)
 
@@ -33,9 +37,7 @@ LNRA-8 interface mimics those of LIRA-8 and LYRA-8. Those are both good to keep 
 |--- | ---|
 | ![](https://raw.githubusercontent.com/MikeMorenoAudio/LIRA-8/master/GUI.png) | ![](https://somasynths.com/wp-content/uploads/2021/05/img_2D_0014.png) |
 
-Oscillator tuning are randomized on startup, and effects turned down. Adjust modulation amount and paths, brighness and other stuff in the parameters, or better yet map them to MIDI or OSC controllers.
-
-It seems to work with at least some of the [fx mod](https://llllllll.co/t/fx-mod/62726) effects for extra juice.
+Oscillator tuning as well as modulations are randomized on startup, and effect mixes turned down. Adjust modulation amount and paths, brighness and other stuff in the parameters, or better yet map them to MIDI or OSC controllers.
 
 ### Download
 

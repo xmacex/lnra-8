@@ -339,28 +339,28 @@ function init_params()
    -- Mod-delay
    params:add_group('mod-delay', "mod delay", 8)
 
-   params:add_taper('mod-1', "mod 1", 0, 127)
+   params:add_taper('mod-1', "mod 1", 0, 127, math.random(127))
    params:set_action('mod-1', function(val)
 			if DEBUG then print("mod-1: "..val) end
 			osc.send(pd_osc, "/mod-1", {val})
 			mod_1_ui:set_value(val)
    end)
 
-   params:add_taper('time-1', "time 1", 0, 127)
+   params:add_taper('time-1', "time 1", 0, 127, math.random(127))
    params:set_action('time-1', function(val)
 			if DEBUG then print("time-1: "..val) end
 			osc.send(pd_osc, "/time-1", {val})
 			time_1_ui:set_value(val)
    end)
 
-   params:add_taper('mod-2', "mod 2", 0, 127)
+   params:add_taper('mod-2', "mod 2", 0, 127, math.random(127))
    params:set_action('mod-2', function(val)
 			if DEBUG then print("mod-2: "..val) end
 			osc.send(pd_osc, "/mod-2", {val})
 			mod_2_ui:set_value(val)
    end)
 
-   params:add_taper('time-2', "time 2", 0, 127)
+   params:add_taper('time-2', "time 2", 0, 127, math.random(127))
    params:set_action('time-2', function(val)
 			if DEBUG then print("time-2: "..val) end
 			osc.send(pd_osc, "/time-2", {val})
@@ -373,7 +373,7 @@ function init_params()
 			osc.send(pd_osc, "/lfo-wav", {val-1})
    end) -- TODO
 
-   params:add_taper('feedback', "feedback", 0, 127)
+   params:add_taper('feedback', "feedback", 0, 127, 63+math.random(-startrnd/2, startrnd/2))
    params:set_action('feedback', function(val)
 			if DEBUG then print("feedback: "..val) end
 			osc.send(pd_osc, "/feedback", {val})
@@ -393,7 +393,7 @@ function init_params()
    -- Distortion
    params:add_group('distortion', "distortion", 2)
 
-   params:add_taper('dst-drv', "drv", 0, 127)
+   params:add_taper('dst-drv', "drv", 0, 127, 63+math.random(-startrnd/2, startrnd/2))
    params:set_action('dst-drv', function(val)
 			if DEBUG then print("dst-drv: "..val) end
 			osc.send(pd_osc, "/dst-drv", {val})
@@ -506,10 +506,11 @@ end
 -- Respond to encoders.
 function enc(n, d)
    if n == 1 then
-      print("E1 not implemented")
+      params:delta('del-mix', d)
+      params:delta('dst-mix', d)
    elseif n == 2 then
       if shifted then
-	 params:delta('pitch-1234', d)
+	 params:delta('hold-1234', d)
       else
 	 -- params:delta(encs[n], d)
 	 -- params:delta('hold-1234', d)
@@ -517,7 +518,7 @@ function enc(n, d)
       end
    elseif n == 3 then
       if shifted then
-	 params:delta('pitch-5678', d)
+	 params:delta('hold-5678', d)
       else
 	 -- params:delta('hold-5678', d)
 	 -- params:delta(encs[n], d)
