@@ -28,6 +28,7 @@ encs[2] = {p='pitch-1234', x=3, y=3}
 encs[3] = {p='pitch-5678', x=7, y=3}
 
 grid_map = {}
+grid_map[2] = {[3]='hold-1234',  [7]='hold-5678'}
 grid_map[3] = {[3]='pitch-1234', [7]='pitch-5678'}
 grid_map[6] = {
    [1]='mod-12', [2]='sharp-12', [3]='sharp-34', [4]='mod-34',
@@ -500,19 +501,26 @@ function draw_grid_layout()
 end
 
 function grid_key_handler(x,y,z)
-   if y<=7 then
+   if y<=7 and z == 1 then
       draw_grid_layout()
-      if x<=4 then
-	 encs[2]['p'] = grid_map[y][x]
-	 encs[2]['x'] = x
-	 encs[2]['y'] = y
-      else
-	 encs[3]['p'] = grid_map[y][x]
-	 encs[3]['x'] = x
-	 encs[3]['y'] = y
+      if grid_map[y] ~= nil and grid_map[y][x] ~= nil then
+	 if x<=4 then
+	    encs[2]['p'] = grid_map[y][x]
+	    encs[2]['x'] = x
+	    encs[2]['y'] = y
+	 else
+	    encs[3]['p'] = grid_map[y][x]
+	    encs[3]['x'] = x
+	    encs[3]['y'] = y
+	 end
       end
-      g:led(encs[2]['x'], encs[2]['y'], 8)
-      g:led(encs[3]['x'], encs[3]['y'], 8)
+
+      if encs[2]['p'] ~= nil then
+	 g:led(encs[2]['x'], encs[2]['y'], 8)
+      end
+      if encs[3]['p'] ~= nil then 
+	 g:led(encs[3]['x'], encs[3]['y'], 8)
+      end
       -- sensors
    elseif y==8 then		-- 8: sensors
       -- pad x
