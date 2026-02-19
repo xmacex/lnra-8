@@ -30,6 +30,10 @@ encs[3] = {p='pitch-5678', x=7, y=3}
 grid_map = {}
 grid_map[2] = {[3]='hold-1234',  [7]='hold-5678'}
 grid_map[3] = {[3]='pitch-1234', [7]='pitch-5678'}
+grid_map[5] = {
+   [2]='source-12', [3]='source-34',
+   [6]='source-56', [7]='source-78'
+}
 grid_map[6] = {
    [1]='mod-12', [2]='sharp-12', [3]='sharp-34', [4]='mod-34',
    [5]='mod-56', [6]='sharp-56', [7]='sharp-78', [8]='mod-78'
@@ -447,16 +451,16 @@ function init_ui()
       remove_title(tune_ui)
    end
 
-   mod_12_ui = UI.Slider.new(WIDTH/8/2-8, HEIGHT/2+8, WIDTH/4, 1, params:get('mod-12'), 0, 127, nil, 'right')
+   mod_12_ui   = UI.Slider.new(WIDTH/8/2-8, HEIGHT/2+8, WIDTH/4, 1, params:get('mod-12'), 0, 127, nil, 'right')
    sharp_12_ui = UI.Slider.new(WIDTH/8/2-8, HEIGHT/2+10, WIDTH/4, 1, params:get('sharp-12'), 0, 127, nil, 'right')
 
-   mod_34_ui = UI.Slider.new(WIDTH/8*2, HEIGHT/2+8, WIDTH/4, 1, params:get('mod-34'), 0, 127, nil, 'right')
+   mod_34_ui   = UI.Slider.new(WIDTH/8*2, HEIGHT/2+8, WIDTH/4, 1, params:get('mod-34'), 0, 127, nil, 'right')
    sharp_34_ui = UI.Slider.new(WIDTH/8*2, HEIGHT/2+10, WIDTH/4, 1, params:get('sharp-34'), 0, 127, nil, 'right')
 
-   mod_56_ui = UI.Slider.new(WIDTH/8*4, HEIGHT/2+8, WIDTH/4, 1, params:get('mod-56'), 0, 127, nil, 'right')
+   mod_56_ui   = UI.Slider.new(WIDTH/8*4, HEIGHT/2+8, WIDTH/4, 1, params:get('mod-56'), 0, 127, nil, 'right')
    sharp_56_ui = UI.Slider.new(WIDTH/8*4, HEIGHT/2+10, WIDTH/4, 1, params:get('sharp-56'), 0, 127, nil, 'right')
 
-   mod_78_ui = UI.Slider.new(WIDTH/8*6, HEIGHT/2+8, WIDTH/4, 1, params:get('mod-78'), 0, 127, nil, 'right')
+   mod_78_ui   = UI.Slider.new(WIDTH/8*6, HEIGHT/2+8, WIDTH/4, 1, params:get('mod-78'), 0, 127, nil, 'right')
    sharp_78_ui = UI.Slider.new(WIDTH/8*6, HEIGHT/2+10, WIDTH/4, 1, params:get('sharp-78'), 0, 127, nil, 'right')
 end
 
@@ -468,14 +472,22 @@ function init_grid()
    g = grid.connect()
    g.key = grid_key_handler
    draw_grid_layout()
-   g:led(3,3,4)
-   g:led(7,3,4)
+   g:led(encs[2].x, encs[2].y, 8)
+   g:led(encs[3].x, encs[3].y, 8)
+   g:refresh()
+end
+
+function draw_grid_row(row, brightness)
+   -- draw all the keys which have a parameter on them
+   for i,x in pairs(grid_map[row]) do
+      g:led(i, row, brightness or 4)
+   end
 end
 
 function draw_grid_layout()
-   -- pitch
-   g:led(3, 3, 4)
-   g:led(7, 3, 4)
+   draw_grid_row(2) -- hold
+   draw_grid_row(3) -- pitch
+   draw_grid_row(5) -- sources
 
    -- mods and sharps
    g:led(1, 6, 1)
@@ -488,10 +500,7 @@ function draw_grid_layout()
    g:led(6, 6, 3)
    g:led(7, 6, 3)
 
-   -- tunes
-   for x=1,8 do
-      g:led(x, 7, 4)
-   end
+   draw_grid_row(7) -- tunes
 
    -- sensors
    for x=1,8 do
@@ -508,6 +517,7 @@ function grid_key_handler(x,y,z)
 	    encs[2]['p'] = grid_map[y][x]
 	    encs[2]['x'] = x
 	    encs[2]['y'] = y
+	    g:led(x,y,8)
 	 else
 	    encs[3]['p'] = grid_map[y][x]
 	    encs[3]['x'] = x
@@ -515,17 +525,10 @@ function grid_key_handler(x,y,z)
 	 end
       end
 
-      if encs[2]['p'] ~= nil then
-	 g:led(encs[2]['x'], encs[2]['y'], 8)
-      end
-      if encs[3]['p'] ~= nil then 
-	 g:led(encs[3]['x'], encs[3]['y'], 8)
-      end
-      -- sensors
+      g:led(encs[2]['x'], encs[2]['y'], 8)
+      g:led(encs[3]['x'], encs[3]['y'], 8)
    elseif y==8 then		-- 8: sensors
-      -- pad x
-      local par="sensor-"..x
-      params:set(par, z)
+      params:set("sensor-"..x, z)
       g:led(x, y, 4+4*z)
    end
 
